@@ -1,0 +1,50 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: alumni-backend
+  datasource:
+    url: jdbc:mysql://localhost:3306/alumni_db?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai&useSSL=false
+    username: root
+    password: root
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 50MB
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: Asia/Shanghai
+    serialization:
+      write-dates-as-timestamps: false
+
+mybatis-plus:
+  mapper-locations: classpath:/mapper/**/*.xml
+  type-aliases-package: com.alumni.entity
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  global-config:
+    db-config:
+      logic-delete-field: deleted
+      logic-delete-value: 1
+      logic-not-delete-value: 0
+      id-type: auto
+
+jwt:
+  secret: alumni-management-system-secret-key-2024-ysu-java-web
+  expiration: 7200000
+  refresh-expiration: 604800000
+
+alipay:
+  app-id: your-sandbox-app-id
+  private-key: your-private-key
+  public-key: your-public-key
+  gateway-url: https://openapi-sandbox.dl.alipaydev.com/gateway.do
+  notify-url: http://localhost:8080/api/pay/notify
+  return-url: http://localhost:5173/donation/result
+
+logging:
+  level:
+    com.alumni.mapper: debug

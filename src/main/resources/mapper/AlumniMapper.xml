@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.alumni.mapper.AlumniMapper">
+    <select id="selectAlumniPage" resultType="com.alumni.entity.Alumni">
+        SELECT a.*, c.name as class_name, col.name as college_name
+        FROM alumni a
+        LEFT JOIN class c ON a.class_id = c.id
+        LEFT JOIN college col ON c.college_id = col.id
+        WHERE a.deleted = 0
+        <if test="name != null and name != ''">
+            AND a.name LIKE CONCAT('%', #{name}, '%')
+        </if>
+        <if test="studentNo != null and studentNo != ''">
+            AND a.student_no LIKE CONCAT('%', #{studentNo}, '%')
+        </if>
+        <if test="classId != null">
+            AND a.class_id = #{classId}
+        </if>
+        <if test="collegeId != null">
+            AND c.college_id = #{collegeId}
+        </if>
+        <if test="industry != null and industry != ''">
+            AND a.industry = #{industry}
+        </if>
+        <if test="region != null and region != ''">
+            AND a.region = #{region}
+        </if>
+        ORDER BY a.create_time DESC
+    </select>
+</mapper>

@@ -3,8 +3,11 @@ package com.alumni.service;
 import com.alipay.api.AlipayClient;
 import com.alipay.api.DefaultAlipayClient;
 import com.alipay.api.request.AlipayTradePagePayRequest;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 public class AlipayService {
@@ -26,7 +29,18 @@ public class AlipayService {
         AlipayTradePagePayRequest request = new AlipayTradePagePayRequest();
         request.setNotifyUrl(notifyUrl);
         request.setReturnUrl(returnUrl);
-        request.setBizContent("{"out_trade_no":"" + orderNo + "","total_amount":"" + amount + "","subject":"" + subject + "","product_code":"FAST_INSTANT_TRADE_PAY"}");
+        
+        // Build JSON safely using ObjectMapper to prevent JSON injection attacks
+        Map<String, String> bizContent = new HashMap<>();
+        bizContent.put("out_trade_no", orderNo);
+        bizContent.put("total_amount", amount);
+        bizContent.put("subject", subject);
+        bizContent.put("product_code", "FAST_INSTANT_TRADE_PAY");
+        
+        ObjectMapper mapper = new ObjectMapper();
+        String jsonContent = mapper.writeValueAsString(bizContent);
+        request.setBizContent(jsonContent);
+        
         return client.pageExecute(request).getBody();
     }
 }
